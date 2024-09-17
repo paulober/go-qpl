@@ -3,8 +3,9 @@ package qpl
 import (
 	"encoding/xml"
 	"errors"
-	"io/fs"
+	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -36,8 +37,8 @@ type QPLContentObject struct {
 	MetaData    MetaData `xml:"MetaData"`
 }
 
-func readQPLXMLFile(fileEntry fs.DirEntry) (QPLContentObject, error) {
-	file, err := os.Open(fileEntry.Name())
+func readQPLXMLFile(filePath string) (QPLContentObject, error) {
+	file, err := os.Open(filePath)
 	if err != nil {
 		return QPLContentObject{}, err
 	}
@@ -85,7 +86,8 @@ func findQPLFile(contents []os.DirEntry) (os.DirEntry, error) {
 
 func ReadQPLFolder(folder string) (QPLFile, error) {
 	// check if folder exists and is a directory
-	if _, err := os.Stat(folder); os.IsNotExist(err) {
+	info, err := os.Stat(folder)
+	if os.IsNotExist(err) || !info.IsDir() {
 		return QPLFile{}, err
 	}
 
@@ -96,11 +98,13 @@ func ReadQPLFolder(folder string) (QPLFile, error) {
 	}
 
 	// if contents count is 1, then make contents = os.ReadDir of contents[0]
-	if len(contents) == 1 {
-		contents, err = os.ReadDir(folder + "/" + contents[0].Name())
+	if len(contents) == 1 && contents[0].IsDir() {
+		subfolder := filepath.Join(folder, contents[0].Name())
+		contents, err = os.ReadDir(subfolder)
 		if err != nil {
-			return QPLFile{}, err
+			return QPLFile{}, fmt.Errorf("failed to read subfolder contents: %v", err)
 		}
+		folder = subfolder
 	}
 
 	// find qpl file (file which contains "qpl" in the name and has xml file extension)
@@ -116,12 +120,12 @@ func ReadQPLFolder(folder string) (QPLFile, error) {
 	}
 
 	// read qplFile and qtiFile
-	qplContentObject, err := readQPLXMLFile(qplFile)
+	qplContentObject, err := readQPLXMLFile(filepath.Join(folder, qplFile.Name()))
 	if err != nil {
 		return QPLFile{}, err
 	}
 
-	qtiContentObject, err := ReadQTIXMLFile(qtiFile)
+	qtiContentObject, err := ReadQTIXMLFile(filepath.Join(folder, qtiFile.Name()))
 	if err != nil {
 		return QPLFile{}, err
 	}

@@ -2,7 +2,6 @@ package qpl
 
 import (
 	"encoding/xml"
-	"io/fs"
 	"os"
 )
 
@@ -138,8 +137,8 @@ type QuestestInterop struct {
 	Items []Item `xml:"item"`
 }
 
-func ReadQTIXMLFile(fileEntry fs.DirEntry) (QuestestInterop, error) {
-	file, err := os.Open(fileEntry.Name())
+func ReadQTIXMLFile(filePath string) (QuestestInterop, error) {
+	file, err := os.Open(filePath)
 	if err != nil {
 		return QuestestInterop{}, err
 	}
