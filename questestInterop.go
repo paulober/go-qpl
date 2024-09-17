@@ -91,8 +91,8 @@ type ResponseLabel struct {
 }
 
 type RenderChoice struct {
-	Shuffle       string          `xml:"shuffle,attr"`
-	ResponseLabel []ResponseLabel `xml:"response_label"`
+	Shuffle        string          `xml:"shuffle,attr"`
+	ResponseLabels []ResponseLabel `xml:"response_label"`
 }
 
 type ResponseLid struct {
@@ -102,8 +102,8 @@ type ResponseLid struct {
 }
 
 type ResProcessing struct {
-	Outcomes      Outcomes        `xml:"outcomes"`
-	RespCondition []RespCondition `xml:"respcondition"`
+	Outcomes       Outcomes        `xml:"outcomes"`
+	RespConditions []RespCondition `xml:"respcondition"`
 }
 
 type Flow struct {
