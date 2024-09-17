@@ -65,7 +65,7 @@ type Not struct {
 
 type ConditionVar struct {
 	VarEqual VarEqual `xml:"varequal"`
-	Not      Not      `xml:"not"`
+	Not      *Not     `xml:"not"`
 }
 
 type SetVar struct {
