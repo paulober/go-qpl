@@ -124,7 +124,7 @@ type Item struct {
 	Ident         string         `xml:"ident,attr"`
 	Title         string         `xml:"title,attr"`
 	MaxAttempts   int            `xml:"maxattempts,attr"`
-	QTIComment    string         `xml:"qti_comment"`
+	QTIComment    string         `xml:"qticomment"`
 	Duration      string         `xml:"duration"`
 	ItemMetadata  ItemMetadata   `xml:"itemmetadata"`
 	Presentation  Presentation   `xml:"presentation"`
